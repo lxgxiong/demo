@@ -3,17 +3,16 @@ package user
 import "time"
 
 type User struct {
-	Id int64
-	username string	`xorm:"unique"`
-	password string
-	created time.Time
-	updated time.Time
+	Id       int64
+	Username string `xorm:"unique"`
+	Password string
+	Created  time.Time `xorm:"created"`
+	Updated  time.Time `xorm:"updated"`
 }
 
 type Repository interface {
-	Register(username, password string)
-	Login(username,password string)
-	ChangePassword(username, password string)
-	Delete(username string)
+	Register(user *User) (int64, error)
+	Login(user *User) (bool, error)
+	ChangePassword(user *User) (int64, error)
+	Delete(user *User)(int64,error)
 }
-
