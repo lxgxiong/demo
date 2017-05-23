@@ -4,7 +4,7 @@ type Service interface {
 	Register(username, password string) (user *User, err error)
 	Login(username, password string) (bool, error)
 	ChangePassword(username, password string)(bool, error)
-	Delete(username string)
+	Delete(username,password string) (int64,error)
 }
 
 type service struct {
@@ -46,6 +46,10 @@ func (s *service)ChangePassword(username, password string) (bool, error) {
 	return true,nil
 }
 
-func (s *service)Delete(username string) {
-
+func (s *service)Delete(username,password string) (int64,error){
+	user := &User{
+		Username:username,
+		Password:password,
+	}
+	return s.repo.Delete(user)
 }
