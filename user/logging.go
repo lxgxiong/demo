@@ -33,7 +33,7 @@ func (s *loggingService)Login(username, password string) (bool, error) {
 	}(time.Now())
 	return s.Service.Login(username, password)
 }
-func (s *loggingService)ChangePassword(username, password string) (bool, error) {
+func (s *loggingService)ChangePassword(username, password,newPass string) (bool, error) {
 	defer func(begin time.Time) {
 		s.logger.Log(
 			"method", "ChangePassword",
@@ -41,7 +41,7 @@ func (s *loggingService)ChangePassword(username, password string) (bool, error) 
 			"username", username,
 		)
 	}(time.Now())
-	return s.Service.ChangePassword(username, password)
+	return s.Service.ChangePassword(username, password,newPass)
 }
 func (s *loggingService)Delete(username, password string) (int64, error) {
 	defer func(begin time.Time) {

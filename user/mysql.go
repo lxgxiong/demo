@@ -26,12 +26,16 @@ func (r *repository)Register(user *User) (int64,error) {
 }
 
 func (r *repository)Login(user *User) (bool,error){
-	return r.engine.Where("username=?",user.Username).And("password=?",user.Password).Get(&user)
+	return r.engine.Where("username=?",user.Username).And("password=?",user.Password).Get(user)
 }
 
-func (r *repository) ChangePassword(user *User)(int64,error){
-	return r.engine.Where("username=?",user.Username).Cols("password").Update(&user)
+func (r *repository) ChangePassword(username, password,newPass string)(int64,error){
+	u := &User{
+		Username:username,
+		Password:newPass,
+	}
+	return r.engine.Where("username=?",u.Username).And("password=?",password).Cols("password").Update(u)
 }
 func (r *repository) Delete(user *User)(int64,error){
-	return r.engine.Where("username=?",user.Username).And("password=?",user.Password).Delete(&user)
+	return r.engine.Where("username=?",user.Username).And("password=?",user.Password).Delete(user)
 }

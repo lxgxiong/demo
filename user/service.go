@@ -1,9 +1,13 @@
 package user
 
+import (
+	"errors"
+)
+
 type Service interface {
 	Register(username, password string) (user *User, err error)
 	Login(username, password string) (bool, error)
-	ChangePassword(username, password string)(bool, error)
+	ChangePassword(username, password,newPass string)(bool, error)
 	Delete(username,password string) (int64,error)
 }
 
@@ -34,15 +38,18 @@ func (s *service)Login(username, password string) (bool, error) {
 		Username:username,
 		Password:password,
 	}
-	return s.repo.Login(user)
+	b,e := s.repo.Login(user)
+	return b,e
 }
 
-func (s *service)ChangePassword(username, password string) (bool, error) {
-	user := &User{
-		Username:username,
-		Password:password,
+func (s *service)ChangePassword(username, password,newPass string) (bool, error) {
+	effected, err :=s.repo.ChangePassword(username, password,newPass)
+	if err!=nil {
+		return false,err
 	}
-	s.repo.ChangePassword(user)
+	if effected <= 0 {
+		return false, errors.New("change password failed, check your username and password.")
+	}
 	return true,nil
 }
 

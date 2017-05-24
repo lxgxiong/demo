@@ -8,6 +8,7 @@ import (
 type userRequest struct {
 	username string
 	password string
+	newPass string
 }
 
 type userResponse struct {
@@ -29,9 +30,12 @@ func makeRegisterEndpoints(s Service) endpoint.Endpoint {
 func makeLoginEndpoints(s Service) endpoint.Endpoint {
 	return func(ctx context.Context,request interface{})(interface{},error) {
 		req := request.(*userRequest)
-		_,err :=s.Login(req.username,req.password)
+		exists,err :=s.Login(req.username,req.password)
 		if err!=nil {
 			return &userResponse{Msg:"failure", Err:err.Error()},nil
+		}
+		if !exists{
+			return &userResponse{Msg:"failure", Err:"user does not exist"},nil
 		}
 		return &userResponse{Msg:"sucess", Err:""},nil
 	}
@@ -40,8 +44,11 @@ func makeLoginEndpoints(s Service) endpoint.Endpoint {
 func makeChangePasswordEndpoints(s Service) endpoint.Endpoint {
 	return func(ctx context.Context,request interface{})(interface{},error) {
 		req := request.(*userRequest)
-		_,err :=s.ChangePassword(req.username,req.password)
+		success,err :=s.ChangePassword(req.username,req.password,req.newPass)
 		if err!=nil {
+			return &userResponse{Msg:"failure", Err:err.Error()},nil
+		}
+		if !success {
 			return &userResponse{Msg:"failure", Err:err.Error()},nil
 		}
 		return &userResponse{Msg:"sucess", Err:""},nil

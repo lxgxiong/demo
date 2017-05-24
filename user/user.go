@@ -13,6 +13,6 @@ type User struct {
 type Repository interface {
 	Register(user *User) (int64, error)
 	Login(user *User) (bool, error)
-	ChangePassword(user *User) (int64, error)
+	ChangePassword(username, password,newPass string) (int64, error)
 	Delete(user *User)(int64,error)
 }

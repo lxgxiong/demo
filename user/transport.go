@@ -7,7 +7,6 @@ import (
 	kithttp "github.com/go-kit/kit/transport/http"
 	"demo/log"
 	"github.com/gorilla/mux"
-	"fmt"
 )
 func MakeHandler(bs Service) http.Handler {
 	opts := []kithttp.ServerOption{
@@ -44,7 +43,7 @@ func MakeHandler(bs Service) http.Handler {
 	)
 
 	r:=mux.NewRouter()
-	r.Handle("/users",registerHandler).Methods("GET")
+	r.Handle("/users/register",registerHandler).Methods("GET")
 	r.Handle("/users/login",loginHandler).Methods("GET")
 	r.Handle("/users/changepassword",changePasswordHandler).Methods("GET")
 	r.Handle("/users/delete",deleteHandler).Methods("GET")
@@ -67,15 +66,14 @@ func decodeRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	return &userRequest{
 		username:r.FormValue("username"),
 		password:r.FormValue("password"),
+		newPass:r.FormValue("newpass"),
 	}, nil
 }
 
 func encodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
 	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 	rsp := response.(*userResponse)
-	fmt.Println(rsp)
 	content, err:=json.Marshal(rsp)
-	fmt.Println(string(content))
 	if err!=nil {
 		return err
 	}
